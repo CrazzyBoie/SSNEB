@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFirestore } from '../hooks/useFirestore';
 import { defaultNews, defaultEvents } from '../data/defaultData';
-import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaArrowRight, FaTimes, FaTag } from 'react-icons/fa';
+import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaArrowRight, FaTimes } from 'react-icons/fa';
 
 /* ─── Detail Modal ───────────────────────────────────────────────────── */
 const DetailModal = ({ item, type, onClose }) => {
