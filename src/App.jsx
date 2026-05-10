@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LanguageProvider } from './context/LanguageContext';
 import { useFirestore } from './hooks/useFirestore';
 import { defaultSiteSettings } from './data/defaultData';
+import ScrollToTop from './components/ScrollToTop';   // ← new
 
 // Public Components
 import Navbar from './components/Navbar';
@@ -54,6 +55,7 @@ const App = () => {
   return (
     <LanguageProvider>
       <Router>
+        <ScrollToTop />  {/* ← scrolls to top on every route change */}
         <Routes>
           <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
           <Route path="/about" element={<><Navbar /><About /><Footer /></>} />
@@ -72,16 +74,16 @@ const App = () => {
             </ProtectedRoute>
           }>
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="hero-slider" element={<HeroSliderManager />} />
-            <Route path="notices" element={<NoticeManager />} />
-            <Route path="news" element={<NewsManager />} />
-            <Route path="faculty" element={<FacultyManager />} />
-            <Route path="gallery" element={<GalleryManager />} />
+            <Route path="dashboard"    element={<AdminDashboard />} />
+            <Route path="hero-slider"  element={<HeroSliderManager />} />
+            <Route path="notices"      element={<NoticeManager />} />
+            <Route path="news"         element={<NewsManager />} />
+            <Route path="faculty"      element={<FacultyManager />} />
+            <Route path="gallery"      element={<GalleryManager />} />
             <Route path="testimonials" element={<TestimonialsManager />} />
             <Route path="achievements" element={<AchievementsManager />} />
             <Route path="applications" element={<ApplicationsManager />} />
-            <Route path="settings" element={<SiteSettings />} />
+            <Route path="settings"     element={<SiteSettings />} />
           </Route>
         </Routes>
       </Router>
