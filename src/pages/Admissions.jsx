@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../hooks/useFirestore';
 import { FaCheckCircle, FaFileAlt, FaIdCard, FaCamera, FaCertificate, FaArrowRight } from 'react-icons/fa';
 
 const Admissions = () => {
   const { t } = useLanguage();
+
+  // ✅ Connect to the same Firestore key the admin panel reads from
+  const [, setApplications] = useFirestore('admin_applications', []);
+
   const [formData, setFormData] = useState({
     studentName: '',
     studentNameNepali: '',
@@ -71,56 +76,61 @@ const Admissions = () => {
       status: 'pending',
     };
 
-    // 1️⃣  Send to Google Sheets
+    // 1️⃣  Send to Google Sheets (optional, best-effort)
     let sheetOk = false;
     try {
       const params = new URLSearchParams({
-        studentName:      application.studentName,
+        studentName:       application.studentName,
         studentNameNepali: application.studentNameNepali,
-        dob:              application.dob,
-        gender:           application.gender,
-        grade:            application.grade,
-        fatherName:       application.fatherName,
-        motherName:       application.motherName,
-        guardianPhone:    application.guardianPhone,
-        previousSchool:   application.previousSchool,
-        address:          application.address,
-        submittedAt:      application.submittedAt,
-        id:               application.id,
+        dob:               application.dob,
+        gender:            application.gender,
+        grade:             application.grade,
+        fatherName:        application.fatherName,
+        motherName:        application.motherName,
+        guardianPhone:     application.guardianPhone,
+        previousSchool:    application.previousSchool,
+        address:           application.address,
+        submittedAt:       application.submittedAt,
+        id:                application.id,
       });
 
-      const res = await fetch(`${GOOGLE_SHEET_URL}?${params.toString()}`, {
-        method: 'GET', // Apps Script GET is simplest — no CORS preflight
-        mode: 'no-cors', // Google Apps Script requires no-cors
+      await fetch(`${GOOGLE_SHEET_URL}?${params.toString()}`, {
+        method: 'GET',
+        mode: 'no-cors',
       });
 
-      // no-cors means we can't read the response, but if fetch didn't throw, it went through
       sheetOk = true;
     } catch (err) {
       console.error('Google Sheets error:', err);
-      setSubmitError('Could not reach Google Sheets — application saved locally only.');
     }
 
-    // 2️⃣  Always save to localStorage as backup (and for the admin panel)
+    // 2️⃣  Save to Firestore so the admin panel can see it ✅
     try {
-      const existing = JSON.parse(localStorage.getItem('admin_applications') || '[]');
-      existing.push({ ...application, savedToSheet: sheetOk });
-      localStorage.setItem('admin_applications', JSON.stringify(existing));
-    } catch (err) {
-      console.error('localStorage error:', err);
-    }
-
-    setSubmitting(false);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setSubmitError('');
-      setFormData({
-        studentName: '', studentNameNepali: '', dob: '', gender: '',
-        grade: '', fatherName: '', motherName: '', guardianPhone: '',
-        previousSchool: '', address: '', photo: null,
+      await new Promise((resolve, reject) => {
+        setApplications(prev => {
+          const updated = [...(Array.isArray(prev) ? prev : []), { ...application, savedToSheet: sheetOk }];
+          // setApplications from useFirestore writes to Firestore and returns synchronously
+          resolve();
+          return updated;
+        });
       });
-    }, 6000);
+
+      setSubmitting(false);
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setSubmitError('');
+        setFormData({
+          studentName: '', studentNameNepali: '', dob: '', gender: '',
+          grade: '', fatherName: '', motherName: '', guardianPhone: '',
+          previousSchool: '', address: '', photo: null,
+        });
+      }, 6000);
+    } catch (err) {
+      console.error('Firestore save error:', err);
+      setSubmitError('Could not save your application. Please try again.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -202,7 +212,7 @@ const Admissions = () => {
       </section>
 
       {/* Required Documents */}
-      <section style={{ background: 'var(--color-light)', padding: '80px 0' }}>
+      <section className="section" style={{ background: 'var(--color-light)' }}>
         <div className="container">
           <div className="section-title scroll-animate">
             <h2>{t('requiredDocuments')}</h2>
@@ -210,88 +220,62 @@ const Admissions = () => {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '24px'
+            gap: '20px'
           }} className="docs-grid">
             {documents.map((doc, index) => (
-              <div key={index} className="card scroll-animate" style={{
+              <div key={index} className="scroll-animate" style={{
+                background: 'white',
+                borderRadius: 'var(--radius-md)',
                 padding: '28px',
-                textAlign: 'center'
+                textAlign: 'center',
+                boxShadow: 'var(--shadow-card)'
               }}>
-                <div style={{ color: 'var(--color-primary)', fontSize: '2rem', marginBottom: '14px' }}>{doc.icon}</div>
-                <h4 style={{ fontSize: '1rem', marginBottom: '8px', color: 'var(--color-secondary)' }}>{doc.title}</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)' }}>{doc.desc}</p>
+                <div style={{
+                  fontSize: '2.5rem',
+                  color: 'var(--color-primary)',
+                  marginBottom: '16px'
+                }}>
+                  {doc.icon}
+                </div>
+                <h4 style={{ color: 'var(--color-secondary)', marginBottom: '8px' }}>{doc.title}</h4>
+                <p style={{ color: 'var(--color-muted)', fontSize: '0.9rem', margin: 0 }}>{doc.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Fee Structure */}
+      {/* Application Form */}
       <section className="section">
-        <div className="container">
+        <div className="container" style={{ maxWidth: '800px' }}>
           <div className="section-title scroll-animate">
-            <h2>{t('feeStructure')}</h2>
-            <p>Affordable quality education for every family</p>
-          </div>
-          <div className="card scroll-animate" style={{ overflow: 'hidden', maxWidth: '700px', margin: '0 auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: 'var(--color-secondary)', color: 'white' }}>
-                  <th style={{ padding: '16px', textAlign: 'left', fontFamily: 'var(--font-display)' }}>Fee Type</th>
-                  <th style={{ padding: '16px', textAlign: 'right', fontFamily: 'var(--font-display)' }}>Amount (NPR)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { type: 'Admission Fee', amount: '5,000' },
-                  { type: 'Monthly Tuition (Nursery-5)', amount: '2,500' },
-                  { type: 'Monthly Tuition (6-8)', amount: '3,000' },
-                  { type: 'Monthly Tuition (9-10)', amount: '3,500' },
-                  { type: 'Monthly Tuition (+2)', amount: '4,000' },
-                  { type: 'Hostel Fee (Monthly)', amount: '8,000' },
-                  { type: 'Examination Fee', amount: '1,500' },
-                  { type: 'Library & Lab Fee', amount: '1,000' },
-                ].map((fee, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #e5e7eb', background: idx % 2 === 0 ? 'white' : '#f9fafb' }}>
-                    <td style={{ padding: '14px 16px', fontSize: '0.95rem' }}>{fee.type}</td>
-                    <td style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 600, color: 'var(--color-primary)' }}>Rs. {fee.amount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Online Form */}
-      <section style={{ background: 'var(--color-light)', padding: '80px 0' }}>
-        <div className="container">
-          <div className="section-title scroll-animate">
-            <h2>{t('onlineForm')}</h2>
+            <h2>{t('applyOnline')}</h2>
+            <p>{t('fillForm')}</p>
           </div>
 
           {submitted ? (
-            <div className="card scroll-animate" style={{
-              padding: '60px',
-              textAlign: 'center',
-              maxWidth: '600px',
-              margin: '0 auto',
-              border: '3px solid var(--color-success)'
+            <div style={{
+              background: '#D1FAE5',
+              border: '2px solid #10B981',
+              borderRadius: 'var(--radius-md)',
+              padding: '40px',
+              textAlign: 'center'
             }}>
-              <FaCheckCircle size={60} style={{ color: 'var(--color-success)', marginBottom: '20px' }} />
-              <h3 style={{ color: 'var(--color-success)', marginBottom: '12px' }}>Application Submitted!</h3>
-              <p style={{ color: 'var(--color-muted)' }}>{t('successMessage')}</p>
+              <FaCheckCircle size={60} style={{ color: '#10B981', marginBottom: '16px' }} />
+              <h3 style={{ color: '#065F46', fontSize: '1.5rem', marginBottom: '8px' }}>
+                Application Submitted Successfully!
+              </h3>
+              <p style={{ color: '#065F46', margin: 0 }}>
+                Your application has been received. We will contact you at <strong>{formData.guardianPhone || 'your provided number'}</strong> within 2-3 business days.
+              </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="card scroll-animate" style={{
-              padding: '40px',
-              maxWidth: '700px',
-              margin: '0 auto'
-            }}>
+            <form onSubmit={handleSubmit}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '20px'
+                gap: '20px',
+                marginBottom: '20px'
               }} className="form-grid">
                 <div>
                   <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-secondary)' }}>
@@ -308,8 +292,7 @@ const Admissions = () => {
                       padding: '12px',
                       border: '2px solid #e5e7eb',
                       borderRadius: 'var(--radius-sm)',
-                      fontSize: '0.95rem',
-                      fontFamily: 'var(--font-body)'
+                      fontSize: '0.95rem'
                     }}
                   />
                 </div>
@@ -370,9 +353,9 @@ const Admissions = () => {
                     }}
                   >
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
