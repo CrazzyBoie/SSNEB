@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFirestore } from '../hooks/useFirestore';
 import { defaultSiteSettings } from '../data/defaultData';
@@ -221,11 +221,17 @@ const Contact = () => {
                 boxShadow: 'var(--shadow-card)'
               }}>
                 <iframe
+                // eslint-disable-next-line
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d306.8739011407804!2d86.21286951351615!3d26.652521869237823!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ec212a49f8a2ef%3A0x59fb3f75cf6788d2!2sSiddharth%20Sishu%20Niketan%20English%20Boarding%20school!5e1!3m2!1sen!2snp!4v1778606035768!5m2!1sen!2snp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                  // eslint-disable-next-line
                   width="100%"
+                  // eslint-disable-next-line
                   height="100%"
+                  // eslint-disable-next-line
                   style={{ border: 0 }}
+                  // eslint-disable-next-line
                   allowFullScreen=""
+                  // eslint-disable-next-line
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="SSNEBS Location"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { FaFacebook, FaYoutube, FaInstagram, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaFacebook, FaYoutube, FaInstagram, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaTiktok } from 'react-icons/fa';
 import { useFirestore } from '../hooks/useFirestore';
 import { defaultSiteSettings } from '../data/defaultData';
 
@@ -24,10 +24,10 @@ const Footer = () => {
           {/* School Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <img 
-                src={logo} 
-                alt="SSNEBS Logo" 
-                style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid var(--color-accent)' }} 
+              <img
+                src={logo}
+                alt="SSNEBS Logo"
+                style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid var(--color-accent)' }}
               />
               <div>
                 <h4 style={{ fontSize: '1rem', margin: 0, lineHeight: 1.3 }}>Siddhartha Sishu Niketan</h4>
@@ -38,22 +38,56 @@ const Footer = () => {
               {siteSettings?.tagline || t('tagline')}
             </p>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <a href={siteSettings?.facebook || '#'} style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                background: '#1877F2', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', transition: 'var(--transition)'
-              }}><FaFacebook size={16} /></a>
-              <a href={siteSettings?.youtube || '#'} style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                background: '#FF0000', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white'
-              }}><FaYoutube size={16} /></a>
-              <a href={siteSettings?.instagram || '#'} style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white'
-              }}><FaInstagram size={16} /></a>
+              <a
+                href={siteSettings?.facebook || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: '#1877F2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', transition: 'var(--transition)'
+                }}
+              >
+                <FaFacebook size={16} />
+              </a>
+              <a
+                href={siteSettings?.youtube || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: '#FF0000', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white'
+                }}
+              >
+                <FaYoutube size={16} />
+              </a>
+              <a
+                href={siteSettings?.instagram || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white'
+                }}
+              >
+                <FaInstagram size={16} />
+              </a>
+              <a
+                href={siteSettings?.tiktok || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: '#000000',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white'
+                }}
+              >
+                <FaTiktok size={16} />
+              </a>
             </div>
           </div>
 
