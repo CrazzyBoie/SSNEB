@@ -221,7 +221,7 @@ const Contact = () => {
                 boxShadow: 'var(--shadow-card)'
               }}>
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114306.96682250785!2d86.1787805!3d26.6788617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ecfe5ed3d8a8d7%3A0xcd4f74f4d6e8a7c8!2sSiraha%2C%20Nepal!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d306.8739011407804!2d86.21286951351615!3d26.652521869237823!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ec212a49f8a2ef%3A0x59fb3f75cf6788d2!2sSiddharth%20Sishu%20Niketan%20English%20Boarding%20school!5e1!3m2!1sen!2snp!4v1778606035768!5m2!1sen!2snp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
