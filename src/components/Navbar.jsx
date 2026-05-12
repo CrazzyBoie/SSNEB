@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { FaBars, FaTimes, FaPhone, FaEnvelope } from 'react-icons/fa';
+import { FaBars, FaTimes, FaPhone, FaEnvelope, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { useFirestore } from '../hooks/useFirestore';
 import { defaultSiteSettings } from '../data/defaultData';
 
@@ -60,9 +60,33 @@ const Navbar = () => {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span>Follow us:</span>
-            <span style={{ cursor: 'pointer' }}>FB</span>
-            <span style={{ cursor: 'pointer' }}>YT</span>
-            <span style={{ cursor: 'pointer' }}>IG</span>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <a
+                href={siteSettings?.facebook || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: '#1877F2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', transition: 'var(--transition)'
+                }}
+              >
+                <FaFacebook size={16} />
+              </a>
+              <a
+                href={siteSettings?.tiktok || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: '#000000',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white'
+                }}
+              >
+                <FaTiktok size={16} />
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -89,16 +113,16 @@ const Navbar = () => {
             gap: '12px',
             textDecoration: 'none'
           }}>
-            <img 
-              src={logo} 
-              alt="SSNEBS Logo" 
-              style={{ 
-                width: '60px', 
-                height: '60px', 
+            <img
+              src={logo}
+              alt="SSNEBS Logo"
+              style={{
+                width: '60px',
+                height: '60px',
                 borderRadius: '50%',
                 objectFit: 'cover',
                 border: '3px solid var(--color-primary)'
-              }} 
+              }}
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{
