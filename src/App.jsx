@@ -33,6 +33,7 @@ import TestimonialsManager from './admin/TestimonialsManager';
 import AchievementsManager from './admin/AchievementsManager';
 import ApplicationsManager from './admin/ApplicationsManager';
 import SiteSettings from './admin/SiteSettings';
+import PageContentManager from './admin/PageContentManager';
 import ProtectedRoute from './admin/ProtectedRoute';
 
 import './styles/global.css';
@@ -83,6 +84,7 @@ const App = () => {
             <Route path="testimonials" element={<TestimonialsManager />} />
             <Route path="achievements" element={<AchievementsManager />} />
             <Route path="applications" element={<ApplicationsManager />} />
+            <Route path="page-content"  element={<PageContentManager />} />
             <Route path="settings"     element={<SiteSettings />} />
           </Route>
         </Routes>

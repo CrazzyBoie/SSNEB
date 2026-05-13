@@ -336,3 +336,83 @@ export const defaultSiteSettings = {
   instagram: 'https://instagram.com/ssnebs',
   tiktok: 'https://tiktok.com/@ssnebs'
 };
+
+export const defaultPageContent = {
+  // ── Principal's Message ──────────────────────────────────
+  principal: {
+    name: 'Mr. Principal Name',
+    title: 'Principal, SSNEBS',
+    qualifications: 'M.Ed., B.Ed.',
+    experience: '20+ years in education',
+    image: null,
+    quote: "Welcome to Siddhartha Sishu Niketan English Boarding School. We are committed to providing quality education that nurtures every child's potential and prepares them for a bright future.",
+    message: "At SSNEBS, we believe that every child is unique and deserves the best possible start in life. Our dedicated team of educators works tirelessly to create an environment where curiosity is celebrated, creativity is encouraged, and character is built alongside academic achievement. We invite you to be a partner in your child's journey towards excellence.",
+  },
+
+  // ── About Us ─────────────────────────────────────────────
+  about: {
+    schoolName: 'Siddhartha Sishu Niketan English Boarding School',
+    established: '2057 B.S. (2000 A.D.)',
+    location: 'Siraha-1, Nepal',
+    studentCount: '1200+',
+    facultyCount: '60+',
+    affiliation: 'National Examinations Board (NEB)',
+    story1: 'Founded in 2057 B.S. (2000 A.D.), Siddhartha Sishu Niketan English Boarding School has grown from a small local institution to one of the most respected schools in the Siraha district. What started with just a handful of students and teachers has now blossomed into a thriving educational community with over 1200 students and 60+ qualified faculty members.',
+    story2: 'Located in Siraha-1, Nepal, our school has been at the forefront of providing quality English-medium education to the children of the Terai region. Over the past 25+ years, we have consistently produced outstanding academic results while nurturing well-rounded individuals who contribute positively to society.',
+    mission: "To provide quality, holistic education that nurtures every child's potential. We aim to create a learning environment that fosters academic excellence, moral values, and practical skills necessary for success in the modern world.",
+    vision: 'To be the leading school in the Terai region known for academic excellence and character building. We envision a future where every student from SSNEBS becomes a confident, compassionate, and capable leader who makes meaningful contributions to Nepal and the world.',
+    coreValues: {
+      excellence: 'Striving for the highest standards in education',
+      integrity: 'Building character through honesty and ethics',
+      inclusivity: 'Embracing diversity and equal opportunities',
+      innovation: 'Encouraging creative thinking and new ideas',
+      discipline: 'Fostering responsibility and self-control',
+      community: 'Building strong bonds within our school family',
+    },
+    feature1Title: 'NEB Affiliated',
+    feature1Desc: 'Recognized by National Examinations Board',
+    feature2Title: 'Govt. Recognized',
+    feature2Desc: 'Approved by Nepal Government',
+    feature3Title: 'Experienced Faculty',
+    feature3Desc: '60+ qualified and dedicated teachers',
+    feature4Title: '25+ Years Legacy',
+    feature4Desc: 'Established in 2057 B.S. (2000 A.D.)',
+  },
+
+  // ── Contact Us Page ──────────────────────────────────────
+  contactPage: {
+    subtitle: 'Get in Touch with Us',
+    mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114306.96682250785!2d86.1787805!3d26.6788617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ecfe5ed3d8a8d7%3A0xcd4f74f4d6e8a7c8!2sSiraha%2C%20Nepal!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s',
+    additionalNote: 'We typically respond to inquiries within 24 hours on working days (Sunday to Friday).',
+  },
+
+  // ── Admissions Page ──────────────────────────────────────
+  admissions: {
+    subtitle: 'Join the SSNEBS Family',
+    openNotice: 'Admissions Open for Academic Year 2082',
+    eligibility: 'Students of all backgrounds are welcome. Admission is subject to availability of seats and an entrance assessment for classes above Grade 5.',
+    documents: 'Birth Certificate\nPrevious School Leaving Certificate\nTransfer Certificate\nPassport-size photographs (4 copies)\nParent/Guardian Citizenship Copy\nGrade Sheet / Report Card',
+    feeNursery: 'Rs. 2,500/month',
+    feePrimary: 'Rs. 3,000/month',
+    feeMiddle: 'Rs. 3,500/month',
+    feeSEE: 'Rs. 4,000/month',
+    fee11: 'Rs. 5,000/month',
+    fee12: 'Rs. 5,000/month',
+  },
+
+  // ── Academics Page ───────────────────────────────────────
+  academics: {
+    subtitle: 'Comprehensive Education from Nursery to +2',
+    overview: 'We offer a structured and nurturing academic curriculum from Early Childhood Development to +2 Science, guided by the National Curriculum Framework of Nepal and affiliated with the National Examinations Board.',
+    eccdTitle: 'Early Childhood Development (ECCD)',
+    eccdDesc: 'Nursery, LKG, UKG — Play-based learning to build a strong foundation in language, numeracy, and social skills.',
+    primaryTitle: 'Primary Level (Grade 1–5)',
+    primaryDesc: 'English-medium instruction across core subjects. Focus on reading, writing, mathematics, and general science.',
+    lowerSecTitle: 'Lower Secondary (Grade 6–8)',
+    lowerSecDesc: 'Introduction to advanced concepts in science, social studies, mathematics, and computer education.',
+    seeTitle: 'Secondary Level — SEE (Grade 9–10)',
+    seeDesc: 'Preparing students for the Secondary Education Examination (SEE) with a comprehensive curriculum and regular mock tests.',
+    plusTwoTitle: '+2 Science (Grade 11–12)',
+    plusTwoDesc: 'Higher secondary education with Physics, Chemistry, Biology, and Mathematics. NEB-affiliated with strong lab facilities.',
+  },
+};

@@ -102,6 +102,7 @@ const AdminDashboard = () => {
             { label: 'Upload Gallery', path: '/admin/gallery', desc: 'Add new photos' },
             { label: 'Add Faculty', path: '/admin/faculty', desc: 'Register new teacher' },
             { label: 'Edit Hero Slider', path: '/admin/hero-slider', desc: 'Update homepage slides' },
+            { label: 'Page Content', path: '/admin/page-content', desc: 'Edit About, Principal, Contact text' },
             { label: 'Site Settings', path: '/admin/settings', desc: 'Change colors & info' },
             { label: 'View Applications', path: '/admin/applications', desc: 'Review admission forms' },
           ].map((action, index) => (

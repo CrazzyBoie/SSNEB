@@ -1,24 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../hooks/useFirestore';
+import { defaultPageContent } from '../data/defaultData';
 import { FaAward, FaShieldAlt, FaUsers, FaLightbulb, FaHandshake, FaHeart, FaCheckCircle, FaSchool } from 'react-icons/fa';
 
 const About = () => {
   const { t } = useLanguage();
+  const [pageContent] = useFirestore('admin_page_content', defaultPageContent);
+
+  const about = pageContent?.about || defaultPageContent.about;
+  const cv = about.coreValues || defaultPageContent.about.coreValues;
 
   const values = [
-    { icon: <FaAward size={32} />, title: t('excellence'), desc: 'Striving for the highest standards in education' },
-    { icon: <FaShieldAlt size={32} />, title: t('integrity'), desc: 'Building character through honesty and ethics' },
-    { icon: <FaUsers size={32} />, title: t('inclusivity'), desc: 'Embracing diversity and equal opportunities' },
-    { icon: <FaLightbulb size={32} />, title: t('innovation'), desc: 'Encouraging creative thinking and new ideas' },
-    { icon: <FaHandshake size={32} />, title: t('discipline'), desc: 'Fostering responsibility and self-control' },
-    { icon: <FaHeart size={32} />, title: t('community'), desc: 'Building strong bonds within our school family' },
+    { icon: <FaAward size={32} />,     title: t('excellence'),  desc: cv.excellence  },
+    { icon: <FaShieldAlt size={32} />, title: t('integrity'),   desc: cv.integrity   },
+    { icon: <FaUsers size={32} />,     title: t('inclusivity'), desc: cv.inclusivity },
+    { icon: <FaLightbulb size={32} />, title: t('innovation'),  desc: cv.innovation  },
+    { icon: <FaHandshake size={32} />, title: t('discipline'),  desc: cv.discipline  },
+    { icon: <FaHeart size={32} />,     title: t('community'),   desc: cv.community   },
   ];
 
   const features = [
-    { icon: <FaSchool size={40} />, title: 'NEB Affiliated', desc: 'Recognized by National Examinations Board' },
-    { icon: <FaCheckCircle size={40} />, title: 'Govt. Recognized', desc: 'Approved by Nepal Government' },
-    { icon: <FaUsers size={40} />, title: 'Experienced Faculty', desc: '60+ qualified and dedicated teachers' },
-    { icon: <FaAward size={40} />, title: '25+ Years Legacy', desc: 'Established in 2057 B.S. (2000 A.D.)' },
+    { icon: <FaSchool size={40} />,       title: about.feature1Title, desc: about.feature1Desc },
+    { icon: <FaCheckCircle size={40} />,  title: about.feature2Title, desc: about.feature2Desc },
+    { icon: <FaUsers size={40} />,        title: about.feature3Title, desc: about.feature3Desc },
+    { icon: <FaAward size={40} />,        title: about.feature4Title, desc: about.feature4Desc },
   ];
 
   return (
@@ -32,7 +38,7 @@ const About = () => {
       }}>
         <div className="container">
           <h1 style={{ fontSize: '3rem', marginBottom: '12px' }}>About Us</h1>
-          <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>Siddhartha Sishu Niketan English Boarding School</p>
+          <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>{about.schoolName}</p>
         </div>
       </div>
 
@@ -48,15 +54,10 @@ const About = () => {
             textAlign: 'center'
           }} className="scroll-animate">
             <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--color-dark)', marginBottom: '24px' }}>
-              Founded in 2057 B.S. (2000 A.D.), Siddhartha Sishu Niketan English Boarding School has grown from a small 
-              local institution to one of the most respected schools in the Siraha district. What started with just a handful 
-              of students and teachers has now blossomed into a thriving educational community with over 1200 students and 60+ 
-              qualified faculty members.
+              {about.story1}
             </p>
             <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--color-dark)' }}>
-              Located in Siraha-1, Nepal, our school has been at the forefront of providing quality English-medium education 
-              to the children of the Terai region. Over the past 25+ years, we have consistently produced outstanding academic 
-              results while nurturing well-rounded individuals who contribute positively to society.
+              {about.story2}
             </p>
           </div>
         </div>
@@ -72,19 +73,11 @@ const About = () => {
           }} className="mission-grid">
             <div className="card scroll-animate" style={{ padding: '40px' }}>
               <h3 style={{ fontSize: '1.5rem', color: 'var(--color-primary)', marginBottom: '16px' }}>{t('mission')}</h3>
-              <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-dark)' }}>
-                To provide quality, holistic education that nurtures every child's potential. We aim to create a learning 
-                environment that fosters academic excellence, moral values, and practical skills necessary for success in 
-                the modern world.
-              </p>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-dark)' }}>{about.mission}</p>
             </div>
             <div className="card scroll-animate" style={{ padding: '40px' }}>
               <h3 style={{ fontSize: '1.5rem', color: 'var(--color-secondary)', marginBottom: '16px' }}>{t('vision')}</h3>
-              <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-dark)' }}>
-                To be the leading school in the Terai region known for academic excellence and character building. We envision 
-                a future where every student from SSNEBS becomes a confident, compassionate, and capable leader who makes 
-                meaningful contributions to Nepal and the world.
-              </p>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-dark)' }}>{about.vision}</p>
             </div>
           </div>
         </div>
@@ -158,7 +151,7 @@ const About = () => {
               <FaSchool size={50} style={{ color: 'var(--color-primary)' }} />
               <div style={{ textAlign: 'left' }}>
                 <h4 style={{ fontSize: '1.2rem', color: 'var(--color-secondary)', marginBottom: '6px' }}>
-                  National Examinations Board (NEB)
+                  {about.affiliation}
                 </h4>
                 <p style={{ color: 'var(--color-muted)' }}>Nepal Government Recognized Institution</p>
               </div>
