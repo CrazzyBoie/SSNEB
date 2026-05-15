@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useFirestore } from '../hooks/useFirestore';
 import { defaultSiteSettings, defaultPageContent } from '../data/defaultData';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaFacebook, FaYoutube, FaInstagram, FaPaperPlane, FaCheckCircle } from 'react-icons/fa';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const { t } = useLanguage();
@@ -17,14 +18,38 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const SERVICE_ID  = 'service_125ruyi';   // from EmailJS dashboard
+  const TEMPLATE_ID = 'template_jmn2thu';  // from EmailJS dashboard
+  const PUBLIC_KEY  = 'KghisTLsXccuUJHDy';   // from EmailJS Account page
+
+  try {
+    await emailjs.send(
+      SERVICE_ID,
+      TEMPLATE_ID,
+      {
+        from_name:  formData.name,
+        from_email: formData.email,
+        phone:      formData.phone,
+        subject:    formData.subject,
+        message:    formData.message,
+      },
+      PUBLIC_KEY
+    );
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     }, 5000);
-  };
+
+  } catch (error) {
+    console.error('EmailJS error:', error);
+    alert('Failed to send message. Please try again.');
+  }
+};
 
   const contactCards = [
     { icon: <FaMapMarkerAlt size={28} />, title: 'Address', content: siteSettings?.address || t('address') },

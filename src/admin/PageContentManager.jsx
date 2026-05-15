@@ -3,8 +3,11 @@ import { useFirestore } from '../hooks/useFirestore';
 import { defaultPageContent } from '../data/defaultData';
 import {
   FaSave, FaUndo, FaInfoCircle, FaPhone, FaUserTie,
-  FaGraduationCap, FaChevronDown, FaChevronUp, FaImage
+  FaGraduationCap, FaChevronDown, FaChevronUp, FaImage,
+  FaPlus, FaTrash, FaListUl
 } from 'react-icons/fa';
+import { db } from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 // ─── Reusable Components ───────────────────────────────────────────────────
 
@@ -68,7 +71,72 @@ const SectionCard = ({ title, icon, children, accent = 'var(--color-primary)' })
   );
 };
 
+// ─── Tag/Pill List Editor ─────────────────────────────────────────────────
+const TagListEditor = ({ label, hint, items, onAdd, onRemove, placeholder }) => {
+  const [input, setInput] = useState('');
+  const handleAdd = () => {
+    const val = input.trim();
+    if (!val || items.includes(val)) return;
+    onAdd(val);
+    setInput('');
+  };
+  return (
+    <div style={{ marginBottom: '20px' }}>
+      <label style={labelStyle}>{label}</label>
+      {hint && <p style={{ fontSize: '0.78rem', color: '#6b7280', margin: '-4px 0 8px' }}>{hint}</p>}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
+          placeholder={placeholder}
+          style={{ ...inputStyle, flex: 1 }}
+        />
+        <button type="button" onClick={handleAdd} style={{
+          padding: '10px 16px', background: 'var(--color-secondary)', color: 'white',
+          border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700,
+          display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap',
+        }}>
+          <FaPlus size={11} /> Add
+        </button>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        {items.length === 0 && (
+          <span style={{ color: '#9ca3af', fontSize: '0.82rem', fontStyle: 'italic' }}>No items yet — add one above.</span>
+        )}
+        {items.map((item, i) => (
+          <span key={i} style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            padding: '5px 12px', borderRadius: '999px',
+            background: '#f0f4ff', color: '#1A3A6B',
+            fontSize: '0.85rem', fontWeight: 600, border: '1.5px solid #c7d7f5',
+          }}>
+            {item}
+            <button type="button" onClick={() => onRemove(i)} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: '#dc2626', fontSize: '0.75rem', padding: '0', lineHeight: 1,
+              display: 'flex', alignItems: 'center',
+            }} title="Remove">
+              <FaTrash size={10} />
+            </button>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Component ────────────────────────────────────────────────────────
+
+const SCHOOL_OPTIONS_DOC = 'admin_school_options';
+
+const defaultSchoolOptions = {
+  classes: ['Nursery', 'LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  // sections is a map: { className: ['A','B',...] }
+  sections: {},
+  subjects: {}, // per-class map: { '10': ['Physics','Maths',...] }
+  positions: ['Principal', 'Vice Principal', 'Head Teacher', 'Coordinator', 'Librarian', 'Accountant'],
+};
 
 const PageContentManager = () => {
   const [content, setContent] = useFirestore('admin_page_content', defaultPageContent);
@@ -76,12 +144,57 @@ const PageContentManager = () => {
   const [saved, setSaved] = useState(false);
   const [principalImagePreview, setPrincipalImagePreview] = useState(null);
 
+  // School options state
+  const [schoolOptions, setSchoolOptions] = useState(defaultSchoolOptions);
+  const [optionsSaved, setOptionsSaved] = useState(false);
+  const [optionsLoading, setOptionsLoading] = useState(true);
+  const [selectedClassForSection, setSelectedClassForSection] = useState('');
+  const [selectedClassForSubject, setSelectedClassForSubject] = useState('');
+
   useEffect(() => {
     if (content) {
       setFormData(content);
       if (content.principal?.image) setPrincipalImagePreview(content.principal.image);
     }
   }, [content]);
+
+  // Load school options from Firestore
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const snap = await getDoc(doc(db, SCHOOL_OPTIONS_DOC, 'main'));
+        if (snap.exists()) {
+          setSchoolOptions({ ...defaultSchoolOptions, ...snap.data() });
+        }
+      } catch (err) {
+        console.error('Failed to load school options', err);
+      }
+      setOptionsLoading(false);
+    };
+    load();
+  }, []);
+
+  const saveSchoolOptions = async (updated) => {
+    try {
+      await setDoc(doc(db, SCHOOL_OPTIONS_DOC, 'main'), updated);
+      setOptionsSaved(true);
+      setTimeout(() => setOptionsSaved(false), 3000);
+    } catch (err) {
+      alert('Failed to save school options: ' + err.message);
+    }
+  };
+
+  const handleOptionAdd = (key, value) => {
+    const updated = { ...schoolOptions, [key]: [...(schoolOptions[key] || []), value] };
+    setSchoolOptions(updated);
+    saveSchoolOptions(updated);
+  };
+
+  const handleOptionRemove = (key, index) => {
+    const updated = { ...schoolOptions, [key]: schoolOptions[key].filter((_, i) => i !== index) };
+    setSchoolOptions(updated);
+    saveSchoolOptions(updated);
+  };
 
   // Generic nested handler: section.field
   const handleChange = (section, field, value) => {
@@ -130,11 +243,11 @@ const PageContentManager = () => {
     onChange: (e) => handleChange(section, field, e.target.value),
   });
 
-  const principal  = p('principal');
-  const about      = p('about');
+  const principal   = p('principal');
+  const about       = p('about');
   const contactPage = p('contactPage');
-  const admissions = p('admissions');
-  const academics  = p('academics');
+  const admissions  = p('admissions');
+  const academics   = p('academics');
 
   return (
     <div>
@@ -173,6 +286,169 @@ const PageContentManager = () => {
           ✅ Page content saved successfully!
         </div>
       )}
+
+      {optionsSaved && (
+        <div style={{
+          background: '#f0fdf4', color: '#166534', padding: '12px 20px',
+          borderRadius: '8px', marginBottom: '20px', fontWeight: 600,
+          border: '1px solid #bbf7d0',
+        }}>
+          ✅ School options saved!
+        </div>
+      )}
+
+      {/* ── School Options (Classes, Sections, Subjects, Positions) ── */}
+      <SectionCard title="School Options" icon={<FaListUl />} accent="#6366f1">
+        <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: 0, marginBottom: '24px' }}>
+          These lists populate the dropdowns in <strong>Student Management</strong> (Class, Section) and <strong>Faculty Management</strong> (Subject / Position). Changes save automatically when you add or remove an item.
+        </p>
+        {optionsLoading ? (
+          <p style={{ color: '#9ca3af' }}>Loading options…</p>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 40px' }} className="content-grid">
+            <TagListEditor
+              label="Classes"
+              hint="e.g. Nursery, LKG, 1, 2 … 12"
+              items={schoolOptions.classes}
+              onAdd={v => handleOptionAdd('classes', v)}
+              onRemove={i => handleOptionRemove('classes', i)}
+              placeholder="e.g. 11"
+            />
+            {/* Per-class sections manager */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Sections (per Class)</label>
+              <p style={{ fontSize: '0.78rem', color: '#6b7280', margin: '-4px 0 10px' }}>
+                Select a class then add its sections. Each class can have different sections.
+              </p>
+              {/* Class selector tabs */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                {schoolOptions.classes.map(cls => (
+                  <button
+                    key={cls}
+                    type="button"
+                    onClick={() => setSelectedClassForSection(cls)}
+                    style={{
+                      padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700,
+                      border: '1.5px solid', cursor: 'pointer',
+                      background: selectedClassForSection === cls ? '#1A3A6B' : 'white',
+                      borderColor: selectedClassForSection === cls ? '#1A3A6B' : '#d1d5db',
+                      color: selectedClassForSection === cls ? 'white' : '#374151',
+                    }}
+                  >
+                    {cls}
+                    {((schoolOptions.sections || {})[cls] || []).length > 0 && (
+                      <span style={{ marginLeft: '4px', opacity: 0.75 }}>
+                        ({((schoolOptions.sections || {})[cls] || []).length})
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              {selectedClassForSection ? (
+                <TagListEditor
+                  label={`Sections for Class ${selectedClassForSection}`}
+                  hint={`Add sections available for Class ${selectedClassForSection}`}
+                  items={(schoolOptions.sections || {})[selectedClassForSection] || []}
+                  onAdd={v => {
+                    const cur = (schoolOptions.sections || {})[selectedClassForSection] || [];
+                    if (cur.includes(v)) return;
+                    const updated = {
+                      ...schoolOptions,
+                      sections: { ...(schoolOptions.sections || {}), [selectedClassForSection]: [...cur, v] }
+                    };
+                    setSchoolOptions(updated);
+                    saveSchoolOptions(updated);
+                  }}
+                  onRemove={i => {
+                    const cur = (schoolOptions.sections || {})[selectedClassForSection] || [];
+                    const updated = {
+                      ...schoolOptions,
+                      sections: { ...(schoolOptions.sections || {}), [selectedClassForSection]: cur.filter((_, idx) => idx !== i) }
+                    };
+                    setSchoolOptions(updated);
+                    saveSchoolOptions(updated);
+                  }}
+                  placeholder="e.g. A"
+                />
+              ) : (
+                <p style={{ color: '#9ca3af', fontSize: '0.82rem', fontStyle: 'italic' }}>
+                  Click a class above to manage its sections.
+                </p>
+              )}
+            </div>
+            {/* Per-class subjects manager */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Subjects (per Class)</label>
+              <p style={{ fontSize: '0.78rem', color: '#6b7280', margin: '-4px 0 10px' }}>
+                Select a class then add its subjects. Used in Student records and Faculty assignments.
+              </p>
+              {/* Class selector tabs */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                {schoolOptions.classes.map(cls => (
+                  <button
+                    key={cls}
+                    type="button"
+                    onClick={() => setSelectedClassForSubject(cls)}
+                    style={{
+                      padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700,
+                      border: '1.5px solid', cursor: 'pointer',
+                      background: selectedClassForSubject === cls ? '#D72638' : 'white',
+                      borderColor: selectedClassForSubject === cls ? '#D72638' : '#d1d5db',
+                      color: selectedClassForSubject === cls ? 'white' : '#374151',
+                    }}
+                  >
+                    {cls}
+                    {((schoolOptions.subjects || {})[cls] || []).length > 0 && (
+                      <span style={{ marginLeft: '4px', opacity: 0.75 }}>
+                        ({((schoolOptions.subjects || {})[cls] || []).length})
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              {selectedClassForSubject ? (
+                <TagListEditor
+                  label={`Subjects for Class ${selectedClassForSubject}`}
+                  hint={`Add subjects taught in Class ${selectedClassForSubject}`}
+                  items={(schoolOptions.subjects || {})[selectedClassForSubject] || []}
+                  onAdd={v => {
+                    const cur = (schoolOptions.subjects || {})[selectedClassForSubject] || [];
+                    if (cur.includes(v)) return;
+                    const updated = {
+                      ...schoolOptions,
+                      subjects: { ...(schoolOptions.subjects || {}), [selectedClassForSubject]: [...cur, v] }
+                    };
+                    setSchoolOptions(updated);
+                    saveSchoolOptions(updated);
+                  }}
+                  onRemove={i => {
+                    const cur = (schoolOptions.subjects || {})[selectedClassForSubject] || [];
+                    const updated = {
+                      ...schoolOptions,
+                      subjects: { ...(schoolOptions.subjects || {}), [selectedClassForSubject]: cur.filter((_, idx) => idx !== i) }
+                    };
+                    setSchoolOptions(updated);
+                    saveSchoolOptions(updated);
+                  }}
+                  placeholder="e.g. Physics"
+                />
+              ) : (
+                <p style={{ color: '#9ca3af', fontSize: '0.82rem', fontStyle: 'italic' }}>
+                  Click a class above to manage its subjects.
+                </p>
+              )}
+            </div>
+            <TagListEditor
+              label="Positions / Roles"
+              hint="Non-teaching staff positions in Faculty"
+              items={schoolOptions.positions}
+              onAdd={v => handleOptionAdd('positions', v)}
+              onRemove={i => handleOptionRemove('positions', i)}
+              placeholder="e.g. Sports Coach"
+            />
+          </div>
+        )}
+      </SectionCard>
 
       {/* ── Principal's Message ─────────────────────────── */}
       <SectionCard title="Principal's Message" icon={<FaUserTie />} accent="#8B5CF6">

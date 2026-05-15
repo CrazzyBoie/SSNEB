@@ -1,15 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-//  src/firebase.js
-//
-//  HOW TO FILL IN YOUR KEYS:
-//  1. Go to https://console.firebase.google.com
-//  2. Create a project (e.g. "ssnebs-website")
-//  3. Click the </> Web icon to register a web app
-//  4. Copy the firebaseConfig object and paste it below
-//  5. In the Firebase console, go to Build → Firestore Database → Create database
-//     Choose "Start in test mode" (you can lock it down later)
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 

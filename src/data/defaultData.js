@@ -108,82 +108,114 @@ export const defaultFaculty = [
   {
     id: 1,
     name: 'Mr. Ram Prasad Sharma',
-    subject: 'Principal',
+    subjects: [],
+    position: 'Principal',
     qualification: 'M.Ed, B.Ed',
     experience: 20,
+    departments: ['Admin'],
     department: 'Admin',
+    sections: [],
     photo: null,
-    isLeadership: true
+    isLeadership: true,
+    linkedUserId: null
   },
   {
     id: 2,
     name: 'Mrs. Sita Devi Yadav',
-    subject: 'Vice Principal',
+    subjects: [],
+    position: 'Vice Principal',
     qualification: 'M.A English, B.Ed',
     experience: 15,
+    departments: ['Admin'],
     department: 'Admin',
+    sections: [],
     photo: null,
-    isLeadership: true
+    isLeadership: true,
+    linkedUserId: null
   },
   {
     id: 3,
     name: 'Mr. Hari Bahadur Thapa',
-    subject: 'Mathematics',
+    subjects: ['Mathematics'],
+    position: '',
     qualification: 'M.Sc Mathematics, B.Ed',
     experience: 12,
+    departments: ['Secondary'],
     department: 'Secondary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   },
   {
     id: 4,
     name: 'Mrs. Gita Kumari Singh',
-    subject: 'Science',
+    subjects: ['Science', 'Physics'],
+    position: '',
     qualification: 'M.Sc Physics, B.Ed',
     experience: 10,
+    departments: ['Secondary'],
     department: 'Secondary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   },
   {
     id: 5,
     name: 'Mr. Krishna Prasad Gupta',
-    subject: 'Nepali',
+    subjects: ['Nepali'],
+    position: '',
     qualification: 'M.A Nepali, B.Ed',
     experience: 18,
+    departments: ['Primary'],
     department: 'Primary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   },
   {
     id: 6,
     name: 'Mrs. Maya Devi Sharma',
-    subject: 'English',
+    subjects: ['English'],
+    position: '',
     qualification: 'M.A English, B.Ed',
     experience: 14,
+    departments: ['Primary'],
     department: 'Primary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   },
   {
     id: 7,
     name: 'Mr. Dipak Raj Joshi',
-    subject: 'Computer Science',
+    subjects: ['Computer Science'],
+    position: '',
     qualification: 'MCA, B.Ed',
     experience: 8,
-    department: '+2',
+    departments: ['Higher Secondary'],
+    department: 'Higher Secondary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   },
   {
     id: 8,
     name: 'Mrs. Anjali Kumari',
-    subject: 'Accountancy',
+    subjects: ['Accountancy'],
+    position: '',
     qualification: 'M.Com, B.Ed',
     experience: 9,
-    department: '+2',
+    departments: ['Higher Secondary'],
+    department: 'Higher Secondary',
+    sections: [],
     photo: null,
-    isLeadership: false
+    isLeadership: false,
+    linkedUserId: null
   }
 ];
 
@@ -416,3 +448,54 @@ export const defaultPageContent = {
     plusTwoDesc: 'Higher secondary education with Physics, Chemistry, Biology, and Mathematics. NEB-affiliated with strong lab facilities.',
   },
 };
+
+export const defaultStudents = [
+  {
+    id: 1,
+    name: 'Ram Kumar Yadav',
+    dob: '2010-05-15',
+    gender: 'Male',
+    class: '10',
+    section: 'A',
+    rollNo: '101',
+    photo: null,
+    fatherName: 'Shyam Kumar Yadav',
+    motherName: 'Sita Devi Yadav',
+    parentContact: '+977-9801234567',
+    address: 'Siraha-1, Nepal',
+    linkedUserId: null,
+    active: true
+  },
+  {
+    id: 2,
+    name: 'Sita Sharma',
+    dob: '2011-08-22',
+    gender: 'Female',
+    class: '9',
+    section: 'B',
+    rollNo: '205',
+    photo: null,
+    fatherName: 'Hari Prasad Sharma',
+    motherName: 'Gita Devi Sharma',
+    parentContact: '+977-9807654321',
+    address: 'Siraha-2, Nepal',
+    linkedUserId: null,
+    active: true
+  },
+  {
+    id: 3,
+    name: 'Krishna Prasad Gupta',
+    dob: '2009-03-10',
+    gender: 'Male',
+    class: '10',
+    section: 'A',
+    rollNo: '102',
+    photo: null,
+    fatherName: 'Mohan Prasad Gupta',
+    motherName: 'Radha Devi Gupta',
+    parentContact: '+977-9812345678',
+    address: 'Siraha-3, Nepal',
+    linkedUserId: null,
+    active: true
+  }
+];
