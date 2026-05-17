@@ -102,6 +102,7 @@ const Footer = () => {
                 { path: '/faculty', label: t('faculty') },
                 { path: '/gallery', label: t('gallery') },
                 { path: '/contact', label: t('contact') },
+                { path: '/result-lookup', label: 'View Result' },
               ].map(link => (
                 <li key={link.path} style={{ marginBottom: '10px' }}>
                   <Link to={link.path} style={{ color: '#cbd5e1', fontSize: '0.9rem', transition: 'var(--transition)' }}

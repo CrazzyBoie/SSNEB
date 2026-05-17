@@ -48,6 +48,7 @@ import TeacherDashboard from './pages/TeacherDashboard';
 import StudentResults from './pages/StudentResults';
 import Students from './pages/Students';
 import StudentResultViewer from './components/StudentResultViewer';
+import StudentResultLookup from './pages/StudentResultLookup';
 
 import './styles/global.css';
 
@@ -121,6 +122,9 @@ const AppInner = () => {
           <StudentResults />
         </ProtectedRoute>
       } />
+
+      {/* ── Public Result Lookup ─────────────────────── */}
+      <Route path="/result-lookup" element={<><Navbar /><StudentResultLookup /><Footer /></>} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

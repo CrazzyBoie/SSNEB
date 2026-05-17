@@ -25,6 +25,7 @@ const emptyForm = {
   class: '',
   section: '',
   rollNo: '',
+  studentId: '',
   photo: null,
   fatherName: '',
   motherName: '',
@@ -134,7 +135,7 @@ const StudentsManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.class.trim() || !formData.rollNo.trim()) return; // section is optional
+    if (!formData.name.trim() || !formData.class.trim() || !formData.rollNo.trim() || !formData.studentId?.trim()) return; // section is optional
 
     setSaving(true);
     try {
@@ -286,7 +287,7 @@ const StudentsManager = () => {
                     </div>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1e293b' }}>{student.name}</div>
-                      <div style={{ fontSize: '0.78rem', color: '#6b7280' }}>Roll: {student.rollNo}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#6b7280' }}>Roll: {student.rollNo} | ID: {student.studentId || '—'}</div>
                     </div>
                   </div>
                 </td>
@@ -437,6 +438,12 @@ const StudentsManager = () => {
                   <label style={{ display: 'block', marginBottom: '5px', fontWeight: 600, fontSize: '0.85rem' }}>Parent Contact *</label>
                   <input style={inputStyle} value={formData.parentContact} onChange={e => setFormData({...formData, parentContact: e.target.value})} required placeholder="+977-XXXXXXXXXX" />
                 </div>
+              </div>
+
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 600, fontSize: '0.85rem' }}>Student ID *</label>
+                <input style={inputStyle} value={formData.studentId || ''} onChange={e => setFormData({...formData, studentId: e.target.value})} required placeholder="e.g. SSNEBS-2024-001" />
+                <p style={{ fontSize: '0.72rem', color: '#6b7280', margin: '3px 0 0' }}>Unique ID used by the student to view results without logging in</p>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
