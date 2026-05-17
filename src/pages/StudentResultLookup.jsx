@@ -68,19 +68,26 @@ export default function StudentResultLookup() {
 
       setStudent(found);
 
-      // 2. Find linked user to get marks (marks are stored with the user's uid)
+      // In ssnebs_marks, studentId = the student's numeric `id` field (e.g. "1779025157411")
+      // and studentDocId is the same value. We try all possible keys in priority order.
       let marksData = [];
-      if (found.linkedUserId) {
-        const q = query(collection(db, 'ssnebs_marks'), where('studentId', '==', found.linkedUserId));
-        const marksSnap = await getDocs(q);
-        marksData = marksSnap.docs.map(d => d.data());
-      }
 
-      // Also try querying by the student's Firestore doc ID as fallback
-      if (marksData.length === 0) {
-        const q2 = query(collection(db, 'ssnebs_marks'), where('studentId', '==', found.firestoreId));
-        const marksSnap2 = await getDocs(q2);
-        marksData = marksSnap2.docs.map(d => d.data());
+      const candidateIds = [
+        found.id,           // numeric id stored inside the student doc  ← PRIMARY MATCH
+        found.firestoreId,  // Firestore document path id (may differ)
+        found.linkedUserId, // linked user account id
+      ].filter(Boolean).map(String);
+
+      for (const cid of candidateIds) {
+        // Try matching marks.studentId
+        const q1 = query(collection(db, 'ssnebs_marks'), where('studentId', '==', cid));
+        const snap1 = await getDocs(q1);
+        if (!snap1.empty) { marksData = snap1.docs.map(d => d.data()); break; }
+
+        // Try matching marks.studentDocId (explicit field in newer marks docs)
+        const q2 = query(collection(db, 'ssnebs_marks'), where('studentDocId', '==', cid));
+        const snap2 = await getDocs(q2);
+        if (!snap2.empty) { marksData = snap2.docs.map(d => d.data()); break; }
       }
 
       setMarks(marksData);
