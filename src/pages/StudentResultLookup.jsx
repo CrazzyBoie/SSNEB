@@ -53,9 +53,10 @@ export default function StudentResultLookup() {
     setSelectedExam('all');
 
     try {
-      // 1. Find the student record by studentId
-      const studentsSnap = await getDocs(collection(db, 'admin_students'));
-      const allStudents = studentsSnap.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
+      // Students are stored as an array in: ssnebs (collection) → admin_students (doc) → data (field)
+      const studentDoc = await getDoc(doc(db, 'ssnebs', 'admin_students'));
+      const allStudents = studentDoc.exists() ? (studentDoc.data().data || []) : [];
+
       const found = allStudents.find(
         s => s.studentId && s.studentId.trim().toLowerCase() === studentId.trim().toLowerCase()
       );
@@ -68,23 +69,20 @@ export default function StudentResultLookup() {
 
       setStudent(found);
 
-      // In ssnebs_marks, studentId = the student's numeric `id` field (e.g. "1779025157411")
-      // and studentDocId is the same value. We try all possible keys in priority order.
+      // ssnebs_marks documents use studentId = the student's numeric `id` field
+      // and studentDocId as a backup. Try all candidate IDs.
       let marksData = [];
 
       const candidateIds = [
-        found.id,           // numeric id stored inside the student doc  ← PRIMARY MATCH
-        found.firestoreId,  // Firestore document path id (may differ)
-        found.linkedUserId, // linked user account id
-      ].filter(Boolean).map(String);
+        found.id && String(found.id),           // numeric id inside student object ← primary
+        found.linkedUserId && String(found.linkedUserId),
+      ].filter(Boolean);
 
       for (const cid of candidateIds) {
-        // Try matching marks.studentId
         const q1 = query(collection(db, 'ssnebs_marks'), where('studentId', '==', cid));
         const snap1 = await getDocs(q1);
         if (!snap1.empty) { marksData = snap1.docs.map(d => d.data()); break; }
 
-        // Try matching marks.studentDocId (explicit field in newer marks docs)
         const q2 = query(collection(db, 'ssnebs_marks'), where('studentDocId', '==', cid));
         const snap2 = await getDocs(q2);
         if (!snap2.empty) { marksData = snap2.docs.map(d => d.data()); break; }
